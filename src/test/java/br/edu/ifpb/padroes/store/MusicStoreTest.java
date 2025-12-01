@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +23,11 @@ public class MusicStoreTest {
     @BeforeEach
     void setUp() {
         this.store = new MusicStore();
+
+        store.addMusic(new Album("Thriller", "Michael Jackson", MediaType.CD, 49.90, LocalDate.of(1982, 11, 30), AgeRestriction.GENERAL, "Pop", 10));
+        store.addMusic(new Album("Back in Black", "AC/DC", MediaType.VINYL,59.90, LocalDate.of(1980, 7, 25), AgeRestriction.PARENTAL_ADVISORY, "Rock", 5));
+        store.addMusic(new Album("Kind of Blue", "Miles Davis", MediaType.CD,39.90, LocalDate.of(1959, 8, 17), AgeRestriction.GENERAL,"Jazz", 7));
+        store.addMusic(new Album("Bad", "Michael Jackson", MediaType.TAPE,29.90, LocalDate.of(1987, 8, 31), AgeRestriction.PARENTAL_ADVISORY, "Pop", 20));
     }
 
     @Test
@@ -125,4 +131,33 @@ public class MusicStoreTest {
         assertTrue(customer.getPurchases().contains(album), "Album should be added to customer's purchases");
     }
 
+    @Test
+    void testSearchByTitle() {
+
+        List<Album> results = store.searchMusic(SearchType.TITLE, "Thriller");
+        assertEquals(1, results.size());
+        assertEquals("Thriller", results.get(0).getTitle());
+    }
+
+    @Test
+    void testSearchByArtist() {
+
+        List<Album> results = store.searchMusic(SearchType.ARTIST, "Michael Jackson");
+        assertEquals(2, results.size());
+    }
+
+    @Test
+    void testSearchByGenre() {
+
+        List<Album> results = store.searchMusic(SearchType.GENRE, "Rock");
+        assertEquals(1, results.size());
+        assertEquals("Back in Black", results.get(0).getTitle());
+    }
+
+    @Test
+    void testSearchByType() {
+
+        List<Album> results = store.searchMusic(SearchType.TYPE, "CD");
+        assertEquals(2, results.size());
+    }
 }
