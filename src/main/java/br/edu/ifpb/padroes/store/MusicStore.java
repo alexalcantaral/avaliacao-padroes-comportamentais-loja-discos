@@ -14,6 +14,18 @@ public class MusicStore {
 
     private List<Album> inventory = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
+    private ValidadorCompra cadeiaValidador;
+
+    public MusicStore() {
+        ValidadorEstoque validadorEstoque = new ValidadorEstoque();
+        ValidadorCredito validadorCredito = new ValidadorCredito();
+        ValidadorIdade validadorIdade = new ValidadorIdade();
+
+        validadorEstoque.setProximo(validadorCredito);
+        validadorCredito.setProximo(validadorIdade);
+
+        this.cadeiaValidador = validadorEstoque;
+    }
 
     public void addMusic(Album album) {
         inventory.add(album);
@@ -85,25 +97,7 @@ public class MusicStore {
     }
 
     public boolean validatePurchase(Customer customer, Album album) {
-        // Check stock
-        if (album.getStock() <= 0) {
-            System.out.println("Validation failed: Out of stock");
-            return false;
-        }
-
-        // Check customer credit
-        if (customer.getCredit() < album.getPrice()) {
-            System.out.println("Validation failed: Insufficient credit");
-            return false;
-        }
-
-        // Check age restriction for explicit content
-        if (album.getAgeRestriction().equals(AgeRestriction.PARENTAL_ADVISORY) && customer.getDateOfBirth().isAfter(LocalDate.now().minusYears(18))) {
-            System.out.println("Validation failed: Age restriction");
-            return false;
-        }
-
-        return true;
+        return cadeiaValidador.validar(customer, album);
     }
 
     public List<Album> getInventory() {

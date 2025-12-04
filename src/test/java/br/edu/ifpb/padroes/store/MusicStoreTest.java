@@ -132,6 +132,7 @@ public class MusicStoreTest {
     }
 
     @Test
+    @DisplayName("Deve procurar música por titulo")
     void testSearchByTitle() {
 
         List<Album> results = store.searchMusic(SearchType.TITLE, "Thriller");
@@ -140,6 +141,7 @@ public class MusicStoreTest {
     }
 
     @Test
+    @DisplayName("Deve procurar músicas por artista")
     void testSearchByArtist() {
 
         List<Album> results = store.searchMusic(SearchType.ARTIST, "Michael Jackson");
@@ -147,6 +149,7 @@ public class MusicStoreTest {
     }
 
     @Test
+    @DisplayName("Deve procurar música por gênero")
     void testSearchByGenre() {
 
         List<Album> results = store.searchMusic(SearchType.GENRE, "Rock");
@@ -155,6 +158,7 @@ public class MusicStoreTest {
     }
 
     @Test
+    @DisplayName("Deve procurar música por tipo")
     void testSearchByType() {
 
         List<Album> results = store.searchMusic(SearchType.TYPE, "CD");
