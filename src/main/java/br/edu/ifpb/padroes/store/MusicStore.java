@@ -14,7 +14,15 @@ public class MusicStore {
 
     private List<Album> inventory = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
+
     private ValidadorCompra cadeiaValidador;
+
+    private final List<DescontoStrategy> estrategiasDesconto = List.of(
+            new DescontoTipoCliente(),
+            new DescontoVinilAntigo(),
+            new DescontoPopPunkVip()
+    );
+
 
     public MusicStore() {
         ValidadorEstoque validadorEstoque = new ValidadorEstoque();
@@ -51,26 +59,12 @@ public class MusicStore {
     }
 
     public double calculateDiscount(Album album, CustomerType customerType) {
-        double discount = 0;
+        double descontoTotal = 0;
 
-        if (customerType.equals(CustomerType.VIP)) {
-            discount = album.getPrice() * 0.20;
-        } else if (customerType.equals(CustomerType.PREMIUM)) {
-            discount = album.getPrice() * 0.15;
-        } else if (customerType.equals(CustomerType.REGULAR)) {
-            discount = album.getPrice() * 0.05;
+        for(DescontoStrategy strategy : estrategiasDesconto){
+            descontoTotal += strategy.aplicar(album, customerType);
         }
-
-        // Additional discounts
-        if (album.getType().equals(MediaType.VINYL) && album.getReleaseDate().getYear() < 1980) {
-            discount += album.getPrice() * 0.10;
-        }
-
-        if (album.getGenre().equalsIgnoreCase("Pop Punk") && customerType.equals(CustomerType.VIP)) {
-            discount += album.getPrice() * 0.05;
-        }
-
-        return discount;
+        return descontoTotal;
     }
 
     public void purchaseMusic(Customer customer, Album album) {
