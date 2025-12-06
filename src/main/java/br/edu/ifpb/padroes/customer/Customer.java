@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Customer {
+public class Customer implements Observer {
 
     private String name;
     private List<Album> purchases = new ArrayList<>();
@@ -44,5 +44,12 @@ public class Customer {
 
     public CustomerType getType() {
         return type;
+    }
+
+    @Override
+    public void update(Album album) {
+        if(isInterestedIn(album.getGenre())){
+            System.out.println("Notificação: " + name + ", novo álbum comprado do gênero " + album.getGenre());
+        }
     }
 }
